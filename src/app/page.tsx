@@ -1,9 +1,9 @@
-import { Button } from "@/components/ui/button";
+import LoginModal from "@/components/LoginModal";
 
 export default function Home() {
   return (
     <div className="min-h-screen flex flex-col bg-primary items-center justify-center">
-      <Button variant="outline">Entrar no Chat</Button>
+      <LoginModal />
     </div>
   );
 }

@@ -10,6 +10,7 @@
     "generate": "plop --plopfile generators/plopfile.js"
   },
   "dependencies": {
+    "@radix-ui/react-dialog": "^1.1.11",
     "@radix-ui/react-slot": "^1.2.0",
     "@react-spring/web": "^9.7.5",
     "@react-three/drei": "^10.0.7",
