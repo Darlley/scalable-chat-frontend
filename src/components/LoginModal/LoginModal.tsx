@@ -21,7 +21,7 @@ export default function LoginModal(props: LoginModalProps) {
           </DialogDescription>
         </DialogHeader>
         <Button variant="outline" onClick={() =>
-          signIn('google', {
+          signIn('github', {
             redirect: true,
             callbackUrl: "/",
           })

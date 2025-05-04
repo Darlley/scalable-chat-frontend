@@ -1,4 +1,5 @@
-import NextAuth, { Account } from "next-auth";
+import NextAuth, { Account, User } from "next-auth";
+import { JWT } from "next-auth/jwt";
 import GitHub from "next-auth/providers/github";
 import { redirect } from "next/navigation";
 
@@ -28,8 +29,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     })
   ],
 
-  debug: true,
-
   session: { strategy: 'jwt' },
 
   pages: {
@@ -38,13 +37,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   },
 
   callbacks: {
-    async signIn({ user, account, profile }) {
-      console.log("🔍 signIn callback executado", { 
-        userEmail: user?.email,
-        accountProvider: account?.provider,
-        accountId: account?.providerAccountId
-      });
-      
+    async signIn({ user, account }) {
       try {
         if (!user.email || !account) {
           throw new Error("Missing required user information");
@@ -58,7 +51,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           image: user.image,
         };
 
-        const response = await fetch(`${process.env.BACKEND_URL}/api/auth/login`, {
+        const response = await fetch("http://localhost:9000/api/auth/login", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -88,50 +81,15 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     },
 
     async session({ session, token }) {
-      console.log("session")
-      // if (session.user) {
-      //   // Pass the ID from token to the session
-      //   session.user.id = token.sub;
-        
-      //   // Pass the role from token to the session
-      //   if (token.role) {
-      //     session.user.role = token.role as UserRole;
-      //   }
-        
-      //   // Pass the custom token from token to the session
-      //   if (token.customToken) {
-      //     session.user.token = token.customToken as string;
-      //   }
-      // }
-      
+      session.user = token.user as CustomUser;
       return session;
     },
 
     async jwt({ token, user }) {
-      console.log("jwt")
-      // First time jwt is called
       if (user) {
-        token.sub = user.id;
-        token.customToken = user.token;
+        token.user = user;
       }
-
-      // Subsequent calls
-      if (!token.sub) return token;
-
-      // try {
-      //   const dbUser = await prisma.user.findUnique({
-      //     where: { id: token.sub },
-      //     select: { role: true },
-      //   });
-
-      //   if (dbUser) {
-      //     token.role = dbUser.role;
-      //   }
-      // } catch (error) {
-      //   console.error("Error fetching user role:", error);
-      // }
-
       return token;
-    }
+    },
   },
 });
