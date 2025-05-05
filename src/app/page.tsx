@@ -1,6 +1,7 @@
 import LoginModal from "@/components/LoginModal";
+import LogoutButton from "@/components/LogoutButton";
 import { Button } from "@/components/ui/button";
-import { auth } from "@/services/auth";
+import { auth, signOut } from "@/services/auth";
 import Link from "next/link";
 
 export default async function Home() {
@@ -11,9 +12,16 @@ export default async function Home() {
       {!session?.user ? (
         <LoginModal />
       ) : (
-        <Button asChild>
-          <Link href="/dashboard">Dashboard</Link>
-        </Button>
+        <>
+          <h1 className="text-white">Olá {session?.user?.name} 👋</h1>
+
+          <div className="flex mt-4">
+            <Button asChild variant={"secondary"} className="rounded-r-none" size="sm">
+              <Link href="/dashboard">Ir para o dashboard</Link>
+            </Button>
+            <LogoutButton />
+          </div>
+        </>
       )}
     </div>
   );
